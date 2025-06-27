@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Sorting Visualizer Project </title>
+    <style>
+        body{
+
+    background-color: #1e1e2f;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+    padding: 20px;
+            
+        }
+        .controls{
+         margin:20px;
+        }
+
+      .array-container{
+      
+        display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 440px;
+    background: #2e2e40;
+    border: 1px solid #444;
+    margin: 0 auto;
+    max-width: 900px;
+    }
+
+    .bar {
+    width: 20px;
+    margin: 1px;
+    background: #48e0bd;
+    transition: 0.2s;
+  }
+
+    button, select {
+    padding: 10px;
+    margin: 5px;
+    font-size: 14px;
+  }
+  
+  
+    </style>
+</head>
+<body>
+  <h1 style="background-color:#2e2e40;">Sorting Visualizer</h1>
+    <div class="controls">
+        <button onclick="generateArray()" id="generatebutton"> generate new array </button>
+        <select id="algorithms">
+        <option value="bubble">Bubble Sort </option>
+        <option value="selection">Selection Sort</option>
+        <option value="insertion">Insertion Sort</option>
+        </select>
+        <button onclick="startSort()">StartSorting</button>
+    </div>
+    <div class="array-container" id="array"> Graph </div>
+    <script>
+
+      const arrayContainer = document.getElementById("array");
+  let array = [];
+
+  function generateArray(size = 50) {
+    array = [];
+    arrayContainer.innerHTML = '';
+    for (let i = 0; i < size; i++) {
+      let value = Math.floor(Math.random() * 330) + 40;
+      array.push(value);
+
+      let bar = document.createElement("div");
+      bar.classList.add("bar");
+      bar.style.height = `${value}px`;
+      arrayContainer.appendChild(bar);
+    }
+  }
+  generateArray();
+
+  async function swap(i, j) {
+  let bars = document.getElementsByClassName("bar");
+  bars[i].style.backgroundColor = "red";
+  bars[j].style.backgroundColor = "red";
+
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  let temp = bars[i].style.height;
+  bars[i].style.height = bars[j].style.height;
+  bars[j].style.height = temp;
+
+  bars[i].style.backgroundColor = "#4dd0e1";
+  bars[j].style.backgroundColor = "#4dd0e1";
+}
+
+async function bubbleSort() {
+  for (let i = 0; i < array.length - 1; i++) {
+    for (let j = 0; j < array.length - i - 1; j++) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j + 1], array[j]];
+        await swap(j, j + 1);
+      }
+    }
+  }
+}
+
+ async function selectionSort() {
+  for (let i = 0; i < array.length; i++) {
+    let minIndex = i;
+    for (let j = i + 1; j < array.length; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+      await swap(i, minIndex);
+    }
+  }
+}
+
+ async function insertionSort() {
+  let bars = document.getElementsByClassName("bar");
+  for (let i = 1; i < array.length; i++) {
+    let key = array[i];
+    let j = i - 1;
+    while (j >= 0 && array[j] > key) {
+      array[j + 1] = array[j];
+      bars[j + 1].style.height = bars[j].style.height;
+      j--;
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+    array[j + 1] = key;
+    bars[j + 1].style.height = `${key}px`;
+  }
+}
+
+
+
+
+
+
+
+
+
+function startSort() {
+  const algo = document.getElementById("algorithm").value;
+  if (algo === "bubble") bubbleSort();
+  else if (algo === "selection") selectionSort();
+  else if (algo === "insertion") insertionSort();
+}
+
+
+
+
+
+
+    </script>
+    
+</body>
+
+</html>    
